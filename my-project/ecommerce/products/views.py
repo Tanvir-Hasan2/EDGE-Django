@@ -1,16 +1,18 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from rest_framework.views import APIView
 from .serializers import ProductSerializers
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Product
 
-# Create your views here.
+# Create your views here. all api created here
 
 def index(request):
     return HttpResponse("Hello, world!!")
 
+
+#post api
 class ProductView(APIView):
     def post(self,request):
         serializer = ProductSerializers(data = request.data)
@@ -21,8 +23,19 @@ class ProductView(APIView):
 
 
 
+    # get api single and list of product
+    def get(self,request, id=None):
+        if id:
+            try:
+              product = Product.objects.get(id=id)
+            except Product.DoesNotExist:
+                raise Http404
+            serializer = ProductSerializers(product)
+            return Response(serializer.data)
 
-    def get(self,request):
-        products= Product.objects.all()
-        serializer = ProductSerializers(products,many=True)
-        return Response(serializer.data)
+
+
+        else:    
+          products= Product.objects.all()
+          serializer = ProductSerializers(products,many=True)
+          return Response(serializer.data)
