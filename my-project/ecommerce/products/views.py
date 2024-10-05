@@ -5,11 +5,17 @@ from .serializers import ProductSerializers
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Product
+from rest_framework.permissions import IsAuthenticated
+
+
 
 # Create your views here. all api created here
 
 def index(request):
     return HttpResponse("Hello, world!!")
+
+class ProductView(APIView):
+         permission_classes = [IsAuthenticated]
 
 
 #post api
